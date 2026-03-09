@@ -3,7 +3,7 @@
   "overrides": [
     {
       "name": "spdlog",
-      "version": "1.15.3"
+      "version": "1.17.0"
     }
   ],
   "features": {
@@ -25,7 +25,7 @@
     "registries": [
       {
         "kind": "git",
-        "repository": "https://github.com/ModOrganizer2/vcpkg-registry",
+        "repository": "https://github.com/mo2-modern/vcpkg-registry",
         "baseline": "8beb2e0efa9c17dd6d17bb05288dd1e40727f673",
         "packages": ["mo2-cmake", "spdlog"]
       }
