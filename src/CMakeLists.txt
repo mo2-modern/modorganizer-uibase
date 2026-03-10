@@ -100,6 +100,10 @@ set(formatters_header
 )
 
 add_library(uibase SHARED)
+# Require C++23 for coroutines <generator> on MSVC's STL
+# This ensures `std::generator` is available
+target_compile_features(uibase PUBLIC cxx_std_23)
+
 mo2_configure_target(uibase NO_SOURCES WARNINGS ON EXTERNAL_WARNINGS ON)
 mo2_default_source_group()
 

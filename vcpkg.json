@@ -1,5 +1,5 @@
 {
-  "dependencies": ["spdlog"],
+  "dependencies": ["spdlog","mo2-cmake"],
   "overrides": [
     {
       "name": "spdlog",
