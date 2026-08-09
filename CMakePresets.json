@@ -46,10 +46,10 @@
           "value": "x64-windows-static-md"
         }
       },
-      "generator": "Visual Studio 17 2022",
+      "generator": "Visual Studio 18 2026",
       "inherits": ["cmake-dev", "vcpkg-dev"],
-      "name": "vs2022-windows",
-      "toolset": "v143"
+      "name": "vs2026-windows",
+      "toolset": "v145"
     },
     {
       "cacheVariables": {
@@ -58,15 +58,15 @@
           "value": "standalone;testing"
         }
       },
-      "inherits": "vs2022-windows",
-      "name": "vs2022-windows-standalone"
+      "inherits": "vs2026-windows",
+      "name": "vs2026-windows-standalone"
     }
   ],
   "buildPresets": [
     {
-      "name": "vs2022-windows",
+      "name": "vs2026-windows",
       "resolvePackageReferences": "on",
-      "configurePreset": "vs2022-windows"
+      "configurePreset": "vs2026-windows"
     }
   ],
   "version": 4
