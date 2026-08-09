@@ -1,11 +1,5 @@
 {
   "dependencies": ["spdlog"],
-  "overrides": [
-    {
-      "name": "spdlog",
-      "version": "1.15.3"
-    }
-  ],
   "features": {
     "standalone": {
       "description": "Build Standalone.",
