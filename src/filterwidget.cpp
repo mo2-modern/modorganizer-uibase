@@ -560,7 +560,10 @@ void FilterWidget::set()
   compile();
 
   if (m_proxy) {
-    m_proxy->invalidateFilter();
+    // equivalent to the deprecated invalidateFilter(): endFilterChange()
+    // defaults to Direction::Both
+    m_proxy->beginFilterChange();
+    m_proxy->endFilterChange();
   }
 
   if (m_list) {

@@ -100,7 +100,7 @@ set(formatters_header
 )
 
 add_library(uibase SHARED)
-mo2_configure_target(uibase NO_SOURCES WARNINGS ON EXTERNAL_WARNINGS ON)
+mo2_configure_target(uibase NO_SOURCES WARNINGS ON EXTERNAL_WARNINGS ON WERROR ON)
 mo2_default_source_group()
 
 mo2_target_sources(uibase

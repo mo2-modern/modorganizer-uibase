@@ -23,6 +23,13 @@ class QDLLEXPORT FilterWidgetProxyModel : public QSortFilterProxyModel
 
 public:
   FilterWidgetProxyModel(FilterWidget& fw, QWidget* parent = nullptr);
+
+  // begin/endFilterChange() are the two-phase replacement for the deprecated
+  // invalidateFilter(), which stays re-exported so plugins built against it
+  // keep working. drop that one when QT_DISABLE_DEPRECATED_BEFORE reaches 6.13,
+  // which is what removes it from the base class.
+  using QSortFilterProxyModel::beginFilterChange;
+  using QSortFilterProxyModel::endFilterChange;
   using QSortFilterProxyModel::invalidateFilter;
 
 protected:
