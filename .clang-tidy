@@ -1,0 +1,85 @@
+# clang-tidy configuration for uibase.
+#
+# This is a NEW file, which is the point: new files have no merge-conflict surface
+# against upstream, so adopting static analysis costs nothing on every sync. It is
+# also inert for the shipping build -- only clang-tidy and clangd read it, MSVC does
+# not -- so nothing here can change what gets compiled.
+#
+# Checks are adopted ONE AT A TIME, each with its own commit and its own review of
+# every finding. A mass `run-clang-tidy --fix` across the tree is the anti-pattern:
+# it is the mass-reformat scenario with semantics attached.
+#
+# ---------------------------------------------------------------------------
+# ADOPTED
+# ---------------------------------------------------------------------------
+# cppcoreguidelines-pro-type-member-init
+#   Earns its place: it found two real defects in uibase on its first clean run.
+#     - MOBase::Guard's move constructor left m_call indeterminate, so a moved
+#       RAII guard called its action, or leaked the resource, depending on stack
+#       contents. Guard is used to ::CloseHandle.
+#     - ModRepositoryFileInfo left nexusExpires and nexusDownloadUser
+#       uninitialized in both constructors, and modorganizer reads both to decide
+#       whether a cached Nexus download URL is still authorised.
+#   Uninitialized-member bugs are invisible to review, survive testing, and are
+#   exactly what MSVC at /W4 /WX does not catch.
+#
+# ---------------------------------------------------------------------------
+# REFUSED -- these would break the plugin ABI. Do not enable them.
+# ---------------------------------------------------------------------------
+# uibase is a PUBLIC interface consumed by third-party plugins that we do not
+# build and cannot recompile. A change that is source-compatible is not
+# necessarily binary-compatible, and every one of these "fixes" silently breaks
+# already-shipped plugins:
+#
+#   performance-enum-size                 (63 findings in uibase)
+#       Proposes shrinking an enum's underlying type. That changes its size and
+#       the layout of every struct and signature containing it. A plugin built
+#       against the old header reads and writes different bytes than uibase does.
+#       Sold as a performance win; it is an ABI break.
+#
+#   performance-unnecessary-value-param   (100 findings)
+#       Rewrites by-value parameters to const&. That changes the mangled name and
+#       the calling convention of exported functions, so a plugin's call no longer
+#       resolves. Additionally near-worthless here: Qt's implicitly-shared types
+#       (QString, QList) are cheap to copy by design.
+#
+#   bugprone-easily-swappable-parameters   (17 findings)
+#       Would demand reordering or retyping public signatures. Same ABI break, and
+#       not actionable -- it flags any two adjacent parameters of the same type.
+#
+#   modernize-*, readability-*
+#       Not enabled anywhere in this tree. High churn, zero defects, and they touch
+#       public headers. See ADR-001 on keeping diffs minimal and merge-shaped.
+#
+# ---------------------------------------------------------------------------
+# DIAGNOSTIC ONLY -- deliberately NOT batch-applied
+# ---------------------------------------------------------------------------
+#   performance-noexcept-move-constructor
+#       A worked example of why --fix is dangerous. It flags Guard's move
+#       constructor, but adding a plain `noexcept` there would be WRONG: F's move
+#       may throw, and the correct form is
+#       noexcept(std::is_nothrow_move_constructible_v<F>). A blind fix converts a
+#       throw into std::terminate.
+#   bugprone-branch-clone, bugprone-empty-catch
+#       Mixed signal. Worth reading, never worth applying in bulk.
+# Enable these in your editor if you want them; they stay out of the adopted set.
+
+Checks: >
+  -*,
+  cppcoreguidelines-pro-type-member-init,
+  -performance-enum-size,
+  -performance-unnecessary-value-param,
+  -bugprone-easily-swappable-parameters,
+  -modernize-*,
+  -readability-*
+
+# Only our own headers. Qt and vcpkg headers are not ours to fix, and including
+# them buries real findings -- uibase's first scan reported 372 findings, and the
+# signal was entirely in our own sources.
+HeaderFilterRegex: '.*[\\/]uibase[\\/](src|include)[\\/].*'
+
+# Never fail a build on a lint. MSVC at /W4 /WX is the gate that blocks merges;
+# clang-tidy is advisory. Two of 33 repos (installer_omod, installer_fomod_csharp)
+# are C++/CLI and cannot be parsed by clang at all.
+WarningsAsErrors: ''
+FormatStyle: file
