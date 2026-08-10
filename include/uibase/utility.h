@@ -539,7 +539,7 @@ public:
 
   Guard(F f) : m_f(f), m_call(true) {}
 
-  Guard(Guard&& g) : m_f(std::move(g.m_f)) { g.m_call = false; }
+  Guard(Guard&& g) : m_f(std::move(g.m_f)), m_call(g.m_call) { g.m_call = false; }
 
   ~Guard()
   {
@@ -550,6 +550,7 @@ public:
   Guard& operator=(Guard&& g)
   {
     m_f      = std::move(g.m_f);
+    m_call   = g.m_call;
     g.m_call = false;
     return *this;
   }
