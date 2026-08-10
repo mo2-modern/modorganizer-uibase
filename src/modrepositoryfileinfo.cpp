@@ -7,18 +7,19 @@ MOBase::ModRepositoryFileInfo::ModRepositoryFileInfo(
       description(reference.description), version(reference.version),
       categoryID(reference.categoryID), modName(reference.modName),
       gameName(reference.gameName), modID(reference.modID), fileID(reference.fileID),
-      fileSize(reference.fileSize), fileCategory(reference.fileCategory),
-      repository(reference.repository), userData(reference.userData),
-      author(reference.author), uploader(reference.uploader),
-      uploaderUrl(reference.uploaderUrl)
+      nexusExpires(reference.nexusExpires),
+      nexusDownloadUser(reference.nexusDownloadUser), fileSize(reference.fileSize),
+      fileCategory(reference.fileCategory), repository(reference.repository),
+      userData(reference.userData), author(reference.author),
+      uploader(reference.uploader), uploaderUrl(reference.uploaderUrl)
 {}
 
 MOBase::ModRepositoryFileInfo::ModRepositoryFileInfo(QString gameName, int modID,
                                                      int fileID)
     : name(), uri(), description(), version(), categoryID(0), modName(),
-      gameName(gameName), modID(modID), fileID(fileID), fileSize(0),
-      fileCategory(TYPE_UNKNOWN), repository(), userData(), author(), uploader(),
-      uploaderUrl()
+      gameName(gameName), modID(modID), fileID(fileID), nexusExpires(0),
+      nexusDownloadUser(0), fileSize(0), fileCategory(TYPE_UNKNOWN), repository(),
+      userData(), author(), uploader(), uploaderUrl()
 
 {}
 
