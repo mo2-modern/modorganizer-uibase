@@ -162,7 +162,7 @@ public:
 struct Entry
 {
   std::chrono::system_clock::time_point time;
-  Levels level;
+  Levels level{};
   std::string message;
   std::string formattedMessage;
 };

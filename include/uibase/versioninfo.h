@@ -166,7 +166,7 @@ private:
   QString parseReleaseType(QString versionString);
 
 private:
-  VersionScheme m_Scheme;
+  VersionScheme m_Scheme{};
 
   bool m_Valid;
   ReleaseType m_ReleaseType;
